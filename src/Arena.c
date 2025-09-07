@@ -5,7 +5,6 @@
 #include <stdalign.h>
 #include <stddef.h>
 
-#define DEFAULT_ALIGNMENT (sizeof(max_align_t_c99))
 #define MAX(a, b) (((a) > (b)) ? (a) : (b))
 
 Arena arena_init(size_t capacity) {
@@ -42,11 +41,15 @@ void arena_reset(Arena *arena) {
     }
 }
 
-void *arena_alloc(Arena *arena, size_t data_size) {
+void *arena_alloc(Arena *arena, size_t size) {
+    return arena_alloc_aligned(arena, size, DEFAULT_ALIGNMENT);
+}
+
+void *arena_alloc_aligned(Arena *arena, size_t data_size, size_t alignment) {
     assert(arena->data);
 
     size_t current_offset = arena->size;
-    size_t aligned_offset = (current_offset + DEFAULT_ALIGNMENT - 1) & ~(DEFAULT_ALIGNMENT - 1);
+    size_t aligned_offset = (current_offset + alignment - 1) & ~(alignment - 1);
 
     if (aligned_offset + data_size <= arena->capacity) {
         void *data_position = &arena->data[aligned_offset];
@@ -59,7 +62,7 @@ void *arena_alloc(Arena *arena, size_t data_size) {
         Arena *next_arena = (Arena*)malloc(sizeof(Arena));
         if (next_arena == NULL) return NULL;
 
-        size_t new_capacity = MAX(arena->capacity * 2, data_size + DEFAULT_ALIGNMENT);
+        size_t new_capacity = MAX(arena->capacity * 2, data_size + alignment);
 
         next_arena->next = NULL;
 

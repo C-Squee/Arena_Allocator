@@ -2,6 +2,8 @@
 #define ARENA_H
 #include <stdlib.h>
 
+#define DEFAULT_ALIGNMENT (sizeof(max_align_t_c99))
+
 /*
  * max_align_t_c99 - Union to ensure maximum alignment in C99
  *
@@ -71,7 +73,7 @@ void arena_free(Arena *arena);
 void arena_reset(Arena *arena);
 
 /**
- * @brief Allocate memory from the Arena.
+ * @brief Allocate memory from the Arena with default alignment.
  *
  * Allocates @p size bytes from the arena's buffer, if enough space exists.
  * Returns a pointer to the allocated memory, or NULL if out of space.
@@ -82,5 +84,18 @@ void arena_reset(Arena *arena);
  * @return Pointer to allocated memory, or NULL on failure.
  */
 void *arena_alloc(Arena *arena, size_t size);
+
+/**
+ * @brief Allocate memory from the Arena with set alignment.
+ *
+ * Allocates @p size bytes from the arena's buffer, if enough space exists.
+ * Returns a pointer to the allocated memory, or NULL if out of space.
+ * The allocated memory is not initialized.
+ *
+ * @param arena Pointer to the Arena struct.
+ * @param size Number of bytes to allocate.
+ * @return Pointer to allocated memory, or NULL on failure.
+ */
+void *arena_alloc_aligned(Arena *arena, size_t size, size_t alignment);
 
 #endif // ARENA_H
