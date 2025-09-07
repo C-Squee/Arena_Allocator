@@ -2,7 +2,6 @@
 
 #include <assert.h>
 #include <string.h>
-#include <stdalign.h>
 #include <stddef.h>
 
 #define MAX(a, b) (((a) > (b)) ? (a) : (b))
@@ -17,7 +16,7 @@ Arena arena_init(size_t capacity) {
 }
 
 void arena_free(Arena *arena) {
-    free(arena->data);
+    if (arena->data) free(arena->data);
 
     // Free linked list of Arenas
     Arena *sentinel = arena->next;
@@ -28,7 +27,10 @@ void arena_free(Arena *arena) {
         sentinel = next;
     }
 
-    memset(arena, 0, sizeof(Arena));
+    arena->data = NULL;
+    arena->capacity = 0;
+    arena->size = 0;
+    arena->next = NULL;
 }
 
 void arena_reset(Arena *arena) {
@@ -46,7 +48,9 @@ void *arena_alloc(Arena *arena, size_t size) {
 }
 
 void *arena_alloc_aligned(Arena *arena, size_t data_size, size_t alignment) {
+    if (data_size == 0) return NULL;
     assert(arena->data);
+    assert((alignment & (alignment - 1)) == 0); // alignment must be power of two
 
     size_t current_offset = arena->size;
     size_t aligned_offset = (current_offset + alignment - 1) & ~(alignment - 1);
@@ -77,6 +81,6 @@ void *arena_alloc_aligned(Arena *arena, size_t data_size, size_t alignment) {
         arena->next = next_arena;
     }
 
-    return arena_alloc(arena->next, data_size);
+    return arena_alloc_aligned(arena->next, data_size);
 }
 
