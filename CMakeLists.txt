@@ -10,7 +10,7 @@ set(CMAKE_BUILD_TYPE Release)
 option(BUILD_TESTS "Build unit tests" OFF)
 
 add_library(ArenaLib
-    src/Arena.c
+    src/arena.c
 )
 
 target_include_directories(ArenaLib PUBLIC

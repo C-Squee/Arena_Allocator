@@ -4,7 +4,9 @@
 #include <stdint.h>
 #include <assert.h>
 
-#include "Arena.h"
+#include "arena.h"
+
+Arena arena;
 
 static int is_aligned(void *ptr, size_t alignment) {
     return ((uintptr_t)ptr % alignment) == 0;
@@ -12,7 +14,7 @@ static int is_aligned(void *ptr, size_t alignment) {
 
 void test_arena_basic() {
     size_t capacity = 64;
-    Arena arena = arena_init(capacity);
+    arena = arena_init(capacity);
 
     // Allocate 16 bytes
     void *ptr1 = arena_alloc(&arena, 16);

@@ -1,4 +1,4 @@
-#include "Arena.h"
+#include "arena.h"
 
 #include <assert.h>
 #include <string.h>
@@ -81,6 +81,6 @@ void *arena_alloc_aligned(Arena *arena, size_t data_size, size_t alignment) {
         arena->next = next_arena;
     }
 
-    return arena_alloc_aligned(arena->next, data_size);
+    return arena_alloc_aligned(arena->next, data_size, alignment);
 }
 
