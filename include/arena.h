@@ -1,6 +1,7 @@
 #ifndef ARENA_H
 #define ARENA_H
 #include <stdlib.h>
+#include <stdint.h>
 
 #define DEFAULT_ALIGNMENT (sizeof(max_align_t_c99))
 
